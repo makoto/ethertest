@@ -1,31 +1,13 @@
 const { ethers } = require("ethers");
-const { Resolver } = require('@ensdomains/ens-contracts') 
-const { hash } = require('@ensdomains/eth-ens-namehash')
-
-const url = `https://ropsten.infura.io/v3/${process.env.API_KEY}`
-// console.log({url})
+const url = `https://mainnet.infura.io/v3/${process.env.API_KEY}`
 const provider = new ethers.providers.JsonRpcProvider(url);
 
-function getResolverContract(address, provider){
-  return new ethers.Contract(address, Resolver, provider)
-}
-
 async function main(){
-    const block = await provider.getBlock()
-        console.log({block:block.number})
-    let resolver1 = await provider.getResolver('1.offchainexample.eth')
-    console.log({block:block.number, offchainresolver:resolver1.address})
-    let resolver2 = await provider.getResolver('makoto.hatch.eth')
-    console.log({block:block.number, makotohatchresolver:resolver2.address})
-    let address1 = await provider.resolveName('1.offchainexample.eth')
-    console.log({block:block.number, offchainaddress:address1})
-    let address2 = await provider.resolveName('makoto.hatch.eth')
-    console.log({block:block.number, makotohatchaddress:address2})
-    resolver1contract = getResolverContract(address1, provider) 
-    let addr11 = await resolver1contract['addr(bytes32)'](hash('1.offchainexample.eth'), {ccipReadEnabled:true})
-    console.log({addr11})
+  let resolver = await provider.getResolver('1.offchainexample.eth')
+  let address = await provider.resolveName('1.offchainexample.eth')
+  let email = await resolver.getText('email')
+  console.log({resolver:resolver.address, address, email})
 }
-
 main()
 
 /* output
